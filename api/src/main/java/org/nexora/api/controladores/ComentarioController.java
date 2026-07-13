@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/comentario/") //http://localhost:8080/api/comentario/
+@RequestMapping(path = "/api/Comentarios/") //http://localhost:8080/api/Comentarios/
 public class ComentarioController {
 
+        @Autowired
         private final ComentarioService comentarioService;
 
         @Autowired
@@ -20,17 +21,30 @@ public class ComentarioController {
 
         @GetMapping
         public List<Comentario> getComentario(){
-            return comentarioService.getComentario();
+            return comentarioService.findAll();
         }//get
 
         @GetMapping(path = "{comentarioId}")
-        public Comentario getComentario(@PathVariable("comentarioId") Long id) {
-            return comentarioService.getComentario(id);
+        public Comentario getComentarioId(@PathVariable("comentarioId") Long id) {
+            return comentarioService.findById(id);
         }//get
+
+        @PostMapping
+        public Comentario guardar(@RequestBody Comentario comentario){
+            return comentarioService.saveComentario(comentario);
+        }
 
         @DeleteMapping(path = "{comentarioId}")
         public Comentario deleteComentario(@PathVariable("comentarioId") Long id) {
             return comentarioService.deleteComentario(id);
         }//delete
+
+        @PutMapping("/{id}")
+        public Comentario actualizarComentario(
+                @PathVariable Long id,
+                @RequestBody Comentario comentario) {
+
+            return comentarioService.actualizarComentario(id, comentario);
+        }//actualizar
 
 }//PC CC

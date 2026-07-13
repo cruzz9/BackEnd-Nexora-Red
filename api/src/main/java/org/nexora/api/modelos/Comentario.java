@@ -1,38 +1,52 @@
 package org.nexora.api.modelos;
 
+import jakarta.persistence.*;
+import org.nexora.api.modelos.Publicaciones;
+
+//POJO - Plain Old Java Object
+
+@Entity
+@Table(name = "Comentarios")
 public class Comentario {
 
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comentario_id")
 
-    private String comentario;
+    private Long comentarioId;
 
-    public Comentario(Long id, String comentario) {
-        this.id = id;
-        this.comentario = comentario;
-    }//constructor
+    @Column(nullable = false)
+    private String contenido;
 
-    public String getComentario() {
-        return comentario;
-    }//getComentario
+    @ManyToOne
+    @JoinColumn(name = "Publicaciones_publicacion_id")
+    private Publicaciones publicacion;
 
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
-    }//setComentario
-
-    public Long getId() {
-        return id;
-    }//getId
-
-    public void setId(Long id) {
-        this.id = id;
-    }//SetId
-
-
-    @Override
-    public String toString() {
-        return "Comentario{" +
-                "id=" + id +
-                ", comentario='" + comentario + '\'' +
-                '}';
+    public Comentario() {
     }
-}//PC  Comentario
+
+    public Long getComentarioId() {
+        return comentarioId;
+    }//get comentarioId
+
+    public void setComentarioId(Long comentarioId) {
+        this.comentarioId = comentarioId;
+    }//set comentarioId
+
+    public String getContenido() {
+        return contenido;
+    }//get contenido
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }//set contenido
+
+    public Publicaciones getPublicacion() {
+        return publicacion;
+    }//get publicacion
+
+    public void setPublicacion(Publicaciones publicacion) {
+        this.publicacion = publicacion;
+    }//set publicación
+
+}//PC Comentario

@@ -1,7 +1,9 @@
 package org.nexora.api.repositorios;
 
+import org.nexora.api.modelos.Comentario;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ComentarioRepository {
+public interface ComentarioRepository extends JpaRepository <Comentario, Long>{
 }
