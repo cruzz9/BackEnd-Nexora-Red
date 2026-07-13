@@ -1,38 +1,67 @@
 package org.nexora.api.modelos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+//POJO - Plain Old Java Object
+
+@Entity
+@Table(name = "Comentarios")
 public class Comentario {
 
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comentario_id", unique = true, nullable = false)
+    private Long comentarioId;
 
-    private String comentario;
 
-    public Comentario(Long id, String comentario) {
-        this.id = id;
-        this.comentario = comentario;
-    }//constructor
+    @Column(name = "contenido", nullable = false)
+    private String contenido;
 
-    public String getComentario() {
-        return comentario;
-    }//getComentario
+    //Fk muchos a uno: muchos comentarios tiene una publicacion
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name="Publicaciones_publicacion_id")
+    private Publicacion publicacion;
 
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
-    }//setComentario
 
-    public Long getId() {
-        return id;
-    }//getId
 
-    public void setId(Long id) {
-        this.id = id;
-    }//SetId
+    public Comentario(String contenido) {
+        this.contenido = contenido;
+    }//constructor Comentario
+
+    public Comentario() {
+
+    }//constructor JPA
+
+    public Long getComentarioId() {
+        return comentarioId;
+    }//getComentarioId
+
+    public String getContenido() {
+        return contenido;
+    }//getContenido
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }//setContenido
+
+    public Publicacion getPublicacion() {
+        return publicacion;
+    }//getPublicacion
+
+    public void setPublicacion(Publicacion publicacion) {
+        this.publicacion = publicacion;
+    }//setPublicacion
 
 
     @Override
     public String toString() {
         return "Comentario{" +
-                "id=" + id +
-                ", comentario='" + comentario + '\'' +
+                "comentarioId=" + comentarioId +
+                ", contenido='" + contenido + '\'' +
+                ", publicacion=" + publicacion +
                 '}';
     }
-}//PC  Comentario
+}//class Comentario
