@@ -1,20 +1,35 @@
 package org.nexora.api.modelos;
 
-public class Publicaciones {
+import jakarta.persistence.*;
 
-private Long idPublicacion;
+@Entity
+@Table(name="publicacion")
+
+public class Publicacion {
+
+@Id
+@GeneratedValue(strategy= GenerationType.IDENTITY)
+@Column(name="publicacionId", unique=true, nullable=false)
+private Long id;
+
+@Column(name = "contenido", nullable=false)
 private String contenido;
+
+@Column(name="likes", nullable=false)
 private Long likes;
 
-    public Publicaciones(String contenido, Long likes ) {
+    public Publicacion(String contenido, Long likes ) {
         this.contenido =contenido;
         this.likes = likes;
-    }//constructorPublicaciones
+    }//constructorPublicacion
 
-    public Publicaciones() {
+    public Publicacion() {
             }//constructor vacío (requisito JPA)
 
-     public String getContenido() {
+    public Long getId() {  return id;
+    }
+
+    public String getContenido() {
         return contenido;
     }//getContenido
 
@@ -33,10 +48,10 @@ private Long likes;
 
     @Override
     public String toString() {
-        return "Publicaciones{" +
-                "idPublicacion=" + idPublicacion +
+        return "Publicacion{" +
+                "idPublicacion=" + id +
                 ", contenido='" + contenido + '\'' +
                 ", likes=" + likes +
                 '}';
     }//toString
-}//classPublicaciones
+}//classPublicacion
