@@ -13,7 +13,8 @@ import java.util.List;
 @RequestMapping("/api/usuarios/") // Ruta base para todos los endpoints de este controlador
 @CrossOrigin(origins = "*") // Permite que tu Frontend se conecte sin bloqueos de CORS
 public class UsuarioController {
-
+    @Autowired
+    private org.nexora.api.configuracion.JwtUtil jwtUtil;
     @Autowired
     private UsuarioService usuarioService;
 
@@ -33,15 +34,21 @@ public class UsuarioController {
     // EndPoint 3: Autenticar un usuario (Petición POST para el Login)
     @PostMapping("/login")
     public ResponseEntity<?> autenticarUsuario(@RequestBody Usuario credenciales) {
-        // El controlador ahora solo le pide al servicio que haga la magia
         Usuario usuarioAutenticado = usuarioService.autenticar(credenciales.getEmail(), credenciales.getContrasena());
 
         if (usuarioAutenticado != null) {
-            // Si el servicio nos devuelve al usuario todo está correcto (HTTP 200)
-            return ResponseEntity.ok(usuarioAutenticado);
+            // 1. Si los datos coinciden, le fabricamos su token único pasándole su email
+            String tokenGenerado = jwtUtil.generarToken(usuarioAutenticado.getEmail());
+
+            // 2. Respondemos al Frontend enviando el token en formato JSON
+            // También podemos mandar datos básicos como el ID o nombre para facilitar el uso en JS
+            return ResponseEntity.ok("{" +
+                    "\"token\": \"" + tokenGenerado + "\"," +
+                    "\"usuarioId\": " + usuarioAutenticado.getId() + "," +
+                    "\"nombre\": \"" + usuarioAutenticado.getNombre() + "\"" +
+                    "}");
         }
 
-        // Si nos devuelve null, las credenciales fallaron (HTTP 401)
         return ResponseEntity.status(401).body("{\"error\": \"Credenciales incorrectas o el usuario no existe.\"}");
     }
 
