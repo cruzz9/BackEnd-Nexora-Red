@@ -1,5 +1,6 @@
 package org.nexora.api.controladores;
 
+import org.nexora.api.dto.PassDto;
 import org.nexora.api.modelos.Usuario;
 import org.nexora.api.servicios.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,4 +45,17 @@ public class UsuarioController {
         return ResponseEntity.status(401).body("{\"error\": \"Credenciales incorrectas o el usuario no existe.\"}");
     }
 
-}
+    // EndPoint para actualizar la contraseña (Petición PUT)
+    @PutMapping("/{id}/cambiar-password")
+    public ResponseEntity<?> actualizarPassword(@PathVariable Long id, @RequestBody PassDto passwordData) {
+        boolean exito = usuarioService.cambiarContrasena(id, passwordData);
+
+        if (exito) {
+            return ResponseEntity.ok("{\"mensaje\": \"La contraseña ha sido actualizada con éxito.\"}");
+        } else {
+            return ResponseEntity.status(400)
+                    .body("{\"error\": \"La contraseña actual es incorrecta o el usuario no existe.\"}");
+        }
+    }
+
+}//class usuarioController
