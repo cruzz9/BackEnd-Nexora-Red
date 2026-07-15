@@ -1,8 +1,10 @@
 package org.nexora.api.servicios;
 
+import org.nexora.api.dto.PassDto;
 import org.nexora.api.modelos.Usuario;
 import org.nexora.api.repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,8 @@ public class UsuarioService {
     // Inyectamos el repositorio para poder usar sus métodos automáticos (.save, .findAll, etc.)
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Metodo para obtener todos los usuarios
     public List<Usuario> obtenerTodosLosUsuarios() {
@@ -27,11 +31,31 @@ public class UsuarioService {
     public Optional<Usuario> buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
-    // Método para validar las credenciales del usuario
+    // Metodo para validar las credenciales del usuario
     public Usuario autenticar(String email, String contrasena) {
         // Buscamos al usuario por su email
         return usuarioRepository.findByEmail(email)
                 .filter(user -> user.getContrasena().equals(contrasena)) // Si existe, filtramos que la contraseña coincida
                 .orElse(null); // Si no existe o la contraseña está mal, retornamos null
+    }
+
+    // Metodo para cambiar contraseña de forma segura usando nuestro nuevo DTO
+    public boolean cambiarContrasena(Long usuarioId, PassDto datosPassword) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+
+            // Comparamos con el encriptador si la contraseña actual coincide
+            if (passwordEncoder.matches(datosPassword.getPassActual(), usuario.getContrasena())) {
+                // Ciframos la nueva contraseña
+                String nuevoHash = passwordEncoder.encode(datosPassword.getPassNuevo());
+                usuario.setContrasena(nuevoHash);
+
+                usuarioRepository.save(usuario);
+                return true;
+            }
+        }
+        return false;
     }
 }//class UsuarioService

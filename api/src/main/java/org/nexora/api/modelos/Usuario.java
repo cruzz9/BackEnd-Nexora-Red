@@ -1,20 +1,54 @@
 package org.nexora.api.modelos;
 
-import java.util.Date;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "Usuarios") // Alineado con la tabla de la base de datos
 public class Usuario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "usuario_id")
     private Long id;
+
+    @Column(name = "nombre", nullable = false, length = 45)
     private String nombre;
+
+    @Column(name = "apellido", nullable = false, length = 45)
     private String apellido;
+
+    @Column(name = "rol", nullable = false, length = 45)
     private String rol;
-    private Date nacimiento;
+
+    @Column(name = "fecha_nacimiento", nullable = false, length = 45)
+    private String nacimiento;
+
+    @Column(name = "genero", nullable = false, length = 45)
     private String genero;
+
+    @Column(name = "email", nullable = false, length = 45, unique = true)
     private String email;
+
+    @Column(name = "telefono", nullable = false, length = 20)
     private String telefono;
+
+    @Column(name = "contrasena", nullable = false, length = 255) // Ampliado para soportar hash de Spring Security posterior
     private String contrasena;
-    private Long especialidad_especialidad_id; //clave foranea
 
-    public Usuario(String nombre, String apellido, String rol, Date nacimiento, String genero, String email, String telefono, String contrasena ){
+    // RELACIÓN DE CARDINALIDAD REAL: Muchos Usuarios tienen Una Especialidad
+    @ManyToOne(fetch = FetchType.LAZY) // LAZY carga la especialidad solo si la solicitas expresamente (mejora rendimiento)
+    @JoinColumn(name = "especialidad_especialidad_id", nullable = false) // Mapea la clave foránea física en MySQL
+    private Especialidad especialidad;
+
+    // Relación bidireccional opcional de Uno a Uno con Perfil (mapeado por el atributo 'usuario' en Perfil)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Perfil perfil;
+
+    // ---------- Constructores -----------
+    public Usuario() {}
+
+    // Constructor actualizado con el objeto Especialidad
+    public Usuario(String nombre, String apellido, String rol, String nacimiento, String genero, String email, String telefono, String contrasena, Especialidad especialidad) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.rol = rol;
@@ -23,103 +57,45 @@ public class Usuario {
         this.email = email;
         this.telefono = telefono;
         this.contrasena = contrasena;
-    }//constructor usuario
-
-    public Usuario(){}//constructor vacio para JPA
-
-    public Long getId() {
-        return id;
+        this.especialidad = especialidad;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // ------ Getters & Setters --------------------
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
 
-    public String getApellido() {
-        return apellido;
-    }
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
+    public String getNacimiento() { return nacimiento; }
+    public void setNacimiento(String nacimiento) { this.nacimiento = nacimiento; }
 
-    public String getRol() {
-        return rol;
-    }
+    public String getGenero() { return genero; }
+    public void setGenero(String genero) { this.genero = genero; }
 
-    public void setRol(String rol) {
-        this.rol = rol;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public Date getNacimiento() {
-        return nacimiento;
-    }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
-    public void setNacimiento(Date nacimiento) {
-        this.nacimiento = nacimiento;
-    }
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
 
-    public String getGenero() {
-        return genero;
-    }
+    public Especialidad getEspecialidad() { return especialidad; }
+    public void setEspecialidad(Especialidad especialidad) { this.especialidad = especialidad; }
 
-    public void setGenero(String genero) {
-        this.genero = genero;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getContrasena() {
-        return contrasena;
-    }
-
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
-    }
-
-    public Long getEspecialidad_especialidad_id() {
-        return especialidad_especialidad_id;
-    }
-
-    public void setEspecialidad_especialidad_id(Long especialidad_especialidad_id) {
-        this.especialidad_especialidad_id = especialidad_especialidad_id;
-    }
+    public Perfil getPerfil() { return perfil; }
+    public void setPerfil(Perfil perfil) { this.perfil = perfil; }
 
     @Override
     public String toString() {
-        return "Usuario{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", rol='" + rol + '\'' +
-                ", nacimiento=" + nacimiento +
-                ", genero='" + genero + '\'' +
-                ", email='" + email + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", contrasena='" + contrasena + '\'' +
-                ", especialidad_especialidad_id=" + especialidad_especialidad_id +
-                '}';
+        return "Usuario{" + "id=" + id + ", nombre='" + nombre + '\'' + ", email='" + email + '\'' + '}';
     }
-}//class usuario
+}
