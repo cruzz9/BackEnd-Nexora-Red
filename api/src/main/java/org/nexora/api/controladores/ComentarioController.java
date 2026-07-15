@@ -1,6 +1,7 @@
 package org.nexora.api.controladores;
 
 import org.nexora.api.modelos.Comentario;
+import org.nexora.api.modelos.Publicacion;
 import org.nexora.api.servicios.ComentarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -8,43 +9,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/Comentarios/") //http://localhost:8080/api/Comentarios/
+@RequestMapping(path = "/api/comentarios/") //http://localhost:8080/api/Comentarios/
 public class ComentarioController {
 
-        @Autowired
-        private final ComentarioService comentarioService;
+    private final  ComentarioService comentarioService;
 
-        @Autowired
-        public ComentarioController(ComentarioService service){
-            this.comentarioService = service;
-        }//constructor
+    @Autowired
 
-        @GetMapping
-        public List<Comentario> getComentario(){
-            return comentarioService.findAll();
-        }//get
+    public ComentarioController(ComentarioService comentarioService) {
+        this.comentarioService = comentarioService;
+    }//constructor ComentarioController
 
-        @GetMapping(path = "{comentarioId}")
-        public Comentario getComentarioId(@PathVariable("comentarioId") Long id) {
-            return comentarioService.findById(id);
-        }//get
+    @GetMapping
+    public  List<Comentario> getComentarios(){
+        return  comentarioService.getComentarios();
+    }//getComentarios
 
-        @PostMapping
-        public Comentario guardar(@RequestBody Comentario comentario){
-            return comentarioService.saveComentario(comentario);
-        }
+    @GetMapping(path = "{comentarioId}")
+    public Comentario getComentario(@PathVariable("comentarioId") Long id){
+        return comentarioService.getComentario(id);
+    }//getComentario
 
-        @DeleteMapping(path = "{comentarioId}")
-        public Comentario deleteComentario(@PathVariable("comentarioId") Long id) {
-            return comentarioService.deleteComentario(id);
-        }//delete
+    @DeleteMapping(path = "{comentarioId}")
+    public Comentario deleteComentario(@PathVariable("comentarioId") Long id){
+        return comentarioService.deleteComentario(id);
+    }//deleteComentario
 
-        @PutMapping("/{id}")
-        public Comentario actualizarComentario(
-                @PathVariable Long id,
-                @RequestBody Comentario comentario) {
 
-            return comentarioService.actualizarComentario(id, comentario);
-        }//actualizar
+    @PostMapping
+    public Comentario crearComentario(@RequestBody Comentario comentario){
+        return comentarioService.crearComentario(comentario);
+    }//crearComentario
 
-}//PC CC
+    @PutMapping(path = "{comentarioId}")
+    public Comentario actualizarComentario(@PathVariable("comentarioId") Long id,
+                                           @RequestParam(value = "contenido", required = false) String contenido,
+                                           @RequestParam(value = "publicacionId", required = false) Long publicacionId){
+        return comentarioService.actualizarComentario(id, contenido, publicacionId);
+    }//actualizarComentario
+}//class ComentarioController

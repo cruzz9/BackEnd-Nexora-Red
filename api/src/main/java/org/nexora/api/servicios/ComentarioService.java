@@ -1,8 +1,15 @@
 package org.nexora.api.servicios;
 
 import org.nexora.api.modelos.Comentario;
+import org.nexora.api.modelos.Publicacion;
+
+import org.nexora.api.modelos.Usuario;
 import org.nexora.api.repositorios.ComentarioRepository;
+import org.nexora.api.repositorios.PublicacionRepository;
+import org.nexora.api.repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,25 +17,29 @@ import java.util.List;
 @Service
 public class ComentarioService {
 
-    @Autowired
-    private ComentarioRepository comentarioRepository;
+    private final ComentarioRepository comentarioRepository;
+    private final PublicacionRepository publicacionRepository;
+
+
+
+
 
     @Autowired
-    public ComentarioService(ComentarioRepository repository){
-        this.comentarioRepository = repository;
-    }//constructor
+    public ComentarioService(ComentarioRepository comentarioRepository, PublicacionRepository publicacionRepository) {
 
-    public List<Comentario> findAll() {
+        this.comentarioRepository = comentarioRepository;
+        this.publicacionRepository = publicacionRepository;
+
+    }//constructor ComentarioService
+
+    public List<Comentario> getComentarios() {
         return comentarioRepository.findAll();
+    }//getComentarios
+
+    public Comentario getComentario(Long id) {
+        return comentarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El comentario con el id [" + id + "] no existe"));
     }//getComentario
-
-    public Comentario findById(Long id){
-        return comentarioRepository.findById(id).orElse(null);
-    }//buscar
-
-    public Comentario saveComentario(Comentario comentario){
-        return comentarioRepository.save(comentario);
-    }//guardar
 
     public Comentario deleteComentario(Long id) {
         Comentario comentario = null;
@@ -36,22 +47,33 @@ public class ComentarioService {
         if (comentarioRepository.existsById(id)) {
             comentario = comentarioRepository.findById(id).get();
             comentarioRepository.deleteById(id);
-        }
+        }//if
+
         return comentario;
-    }//borrar
+    }//deleteComentario
 
-    public Comentario actualizarComentario(Long id, Comentario comentarioActualizado) {
+    public Comentario crearComentario(Comentario comentario){
 
-        if (comentarioRepository.existsById(id)) {
+        return comentarioRepository.save(comentario);
+    }//crearComentario
 
-            Comentario comentario = comentarioRepository.findById(id).get();
+    public Comentario actualizarComentario(Long id, String contenido, Long publicacionId ){
+        Comentario comentario=null;
+        if(comentarioRepository.existsById(id)){
+            Comentario c=comentarioRepository.findById(id).get();
 
-            comentario.setContenido(comentarioActualizado.getContenido());
-            comentario.setPublicacion(comentarioActualizado.getPublicacion());
+            if(contenido!=null) c.setContenido(contenido);
+            if(publicacionId!=null){
+                if(publicacionRepository.existsById(publicacionId)){
+                    Publicacion publicacion=publicacionRepository.findById(publicacionId).get();
+                c.setPublicacion(publicacion);
+                }//if
+            }//if publicacionId
 
-            return comentarioRepository.save(comentario);
-        }
-        return null;
-    }//actualizar
+            comentario=comentarioRepository.save(c);
+        }//if
+        return comentario;
+    }//actualizarComentario
 
-}//PC CS
+
+}//class ComentarioService

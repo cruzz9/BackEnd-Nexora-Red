@@ -1,7 +1,8 @@
 package org.nexora.api.modelos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.nexora.api.modelos.Publicaciones;
 
 //POJO - Plain Old Java Object
 
@@ -11,42 +12,56 @@ public class Comentario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comentario_id")
-
+    @Column(name = "comentario_id", unique = true, nullable = false)
     private Long comentarioId;
 
-    @Column(nullable = false)
+
+    @Column(name = "contenido", nullable = false)
     private String contenido;
 
+    //Fk muchos a uno: muchos comentarios tiene una publicacion
+    @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "Publicaciones_publicacion_id")
-    private Publicaciones publicacion;
+    @JoinColumn(name="Publicaciones_publicacion_id")
+    private Publicacion publicacion;
+
+
+
+    public Comentario(String contenido) {
+        this.contenido = contenido;
+    }//constructor Comentario
 
     public Comentario() {
-    }
+
+    }//constructor JPA
 
     public Long getComentarioId() {
         return comentarioId;
-    }//get comentarioId
-
-    public void setComentarioId(Long comentarioId) {
-        this.comentarioId = comentarioId;
-    }//set comentarioId
+    }//getComentarioId
 
     public String getContenido() {
         return contenido;
-    }//get contenido
+    }//getContenido
 
     public void setContenido(String contenido) {
         this.contenido = contenido;
-    }//set contenido
+    }//setContenido
 
-    public Publicaciones getPublicacion() {
+    public Publicacion getPublicacion() {
         return publicacion;
-    }//get publicacion
+    }//getPublicacion
 
-    public void setPublicacion(Publicaciones publicacion) {
+    public void setPublicacion(Publicacion publicacion) {
         this.publicacion = publicacion;
-    }//set publicación
+    }//setPublicacion
 
-}//PC Comentario
+
+    @Override
+    public String toString() {
+        return "Comentario{" +
+                "comentarioId=" + comentarioId +
+                ", contenido='" + contenido + '\'' +
+                ", publicacion=" + publicacion +
+                '}';
+    }
+}//class Comentario
