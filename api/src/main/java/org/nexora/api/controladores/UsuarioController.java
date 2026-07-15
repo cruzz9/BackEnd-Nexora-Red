@@ -36,7 +36,7 @@ public class UsuarioController {
         Usuario usuarioAutenticado = usuarioService.autenticar(credenciales.getEmail(), credenciales.getContrasena());
 
         if (usuarioAutenticado != null) {
-            // Si el servicio nos devuelve al usuario, todo está correcto (HTTP 200)
+            // Si el servicio nos devuelve al usuario todo está correcto (HTTP 200)
             return ResponseEntity.ok(usuarioAutenticado);
         }
 
