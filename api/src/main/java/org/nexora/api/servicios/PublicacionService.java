@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PublicacionService {
@@ -29,7 +30,7 @@ public class PublicacionService {
     } //getPublicacion
 
     public Publicacion deletePublicacion(Long id) {
-                Publicacion publicacion = null;
+        Publicacion publicacion = null;
         if (publicacionRepository.existsById(id)) {
             publicacion = publicacionRepository.findById(id).get();
             publicacionRepository.deleteById(id);
@@ -38,16 +39,23 @@ public class PublicacionService {
     }// deletePublicacion
 
     public Publicacion crearPublicacion(Publicacion publicacion) {
-        return publicacionRepository.save(publicacion);
+        Optional<Publicacion> post = publicacionRepository.findByContenido(publicacion.getContenido());
+
+        if (post.isEmpty()) {
+            publicacionRepository.save(publicacion);
+        } else {
+            publicacion = null;
+        } //if-else
+        return publicacion;
     }// crearPublicacion
 
     public Publicacion actualizarPublicacion(Long id, String contenido) {
-        Publicacion publicacion= null;
+        Publicacion publicacion = null;
 
         if (publicacionRepository.existsById(id)) {
-            Publicacion p=publicacionRepository.findById(id).get();
-            if(contenido!=null) p.setContenido(contenido);
-            publicacion=publicacionRepository.save(p);
+            Publicacion p = publicacionRepository.findById(id).get();
+            if (contenido != null) p.setContenido(contenido);
+            publicacion = publicacionRepository.save(p);
 
         }//if
         return publicacion;

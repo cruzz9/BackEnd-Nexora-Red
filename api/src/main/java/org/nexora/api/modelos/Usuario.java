@@ -1,6 +1,11 @@
 package org.nexora.api.modelos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Usuarios") // Alineado con la tabla de la base de datos
@@ -35,15 +40,20 @@ public class Usuario {
     @Column(name = "contrasena", nullable = false, length = 255) // Ampliado para soportar hash de Spring Security posterior
     private String contrasena;
 
-    // RELACIÓN DE CARDINALIDAD REAL: Muchos Usuarios tienen Una Especialidad
-    @ManyToOne(fetch = FetchType.LAZY) // LAZY carga la especialidad solo si la solicitas expresamente (mejora rendimiento)
-    @JoinColumn(name = "especialidad_especialidad_id", nullable = false) // Mapea la clave foránea física en MySQL
+    // RELACIÓN DE CARDINALIDAD REAL: Muchos Usuarios pueden tener Una Especialidad (ahora opcional)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "especialidad_especialidad_id", nullable = true) // 👈 ahora permite null
+    @JsonBackReference // 👈 rompe el ciclo con Especialidad.usuarios
     private Especialidad especialidad;
 
     // Relación bidireccional opcional de Uno a Uno con Perfil (mapeado por el atributo 'usuario' en Perfil)
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Perfil perfil;
 
+    //Relación de cardinalidad: Un Usuario tiene muchas Publicaciones
+    @JsonManagedReference("usuario-publicaciones")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario" )
+    private List<Publicacion> publicaciones = new ArrayList<>();
     // ---------- Constructores -----------
     public Usuario() {}
 

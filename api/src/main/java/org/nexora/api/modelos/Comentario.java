@@ -1,7 +1,7 @@
 package org.nexora.api.modelos;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 //POJO - Plain Old Java Object
@@ -20,16 +20,15 @@ public class Comentario {
     private String contenido;
 
     //Fk muchos a uno: muchos comentarios tiene una publicacion
-    @JsonBackReference
+    @JsonBackReference("publicacion-comentarios")
     @ManyToOne
     @JoinColumn(name="Publicaciones_publicacion_id")
     private Publicacion publicacion;
 
-    @JsonBackReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="usuario_id")
     private Usuario usuario;
-
 
 
     public Comentario(String contenido) {

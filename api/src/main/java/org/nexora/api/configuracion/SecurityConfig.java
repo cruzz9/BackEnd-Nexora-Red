@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Autowired
-    private JwtRequestFilter jwtRequestFilter; //  Inyectamos el filtro de JWT
+    private JwtRequestFilter jwtRequestFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -26,20 +26,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Deshabilitamos CSRF para poder usar Postman libremente
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Permite registrarse sin requerir token JWT
-                        .requestMatchers("/api/usuarios/registro").permitAll()
-                        // Si tienes un endpoint de login, también debe ser libre:
-                        .requestMatchers("/api/usuarios/login").permitAll()
-                        // Cualquier otra ruta sí requerirá estar autenticado
+                        .requestMatchers("/api/usuarios/registro", "/api/usuarios/login").permitAll()
+                        .requestMatchers("/api/especialidades/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                // Le decimos a Spring que no guarde sesiones en el servidor (Stateless),
-                // ya que usaremos únicamente los tokens JWT para validar cada petición.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // Colocamos nuestro filtro personalizado para que actúe ANTES del filtro de login estándar
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
