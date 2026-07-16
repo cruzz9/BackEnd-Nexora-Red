@@ -1,6 +1,11 @@
 package org.nexora.api.modelos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="publicacion")
@@ -9,7 +14,7 @@ public class Publicacion {
 
 @Id
 @GeneratedValue(strategy= GenerationType.IDENTITY)
-@Column(name="publicacionId", unique=true, nullable=false)
+@Column(name="publicacion_id", unique=true, nullable=false)
 private Long id;
 
 @Column(name = "contenido", nullable=false)
@@ -17,6 +22,17 @@ private String contenido;
 
 @Column(name="likes", nullable=false)
 private Long likes;
+
+    // RELACIÓN DE CARDINALIDAD : Muchas  Publicaciones tienen Un Usuario
+@JsonBackReference
+@ManyToOne
+@JoinColumn(name="usuario_id")
+private Usuario usuario;
+
+// Una Publicación puede tener Muchos comentarios
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "publicacion")
+ private List<Comentario> comentarios = new ArrayList<>();
 
     public Publicacion(String contenido, Long likes ) {
         this.contenido =contenido;

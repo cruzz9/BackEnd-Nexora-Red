@@ -1,6 +1,10 @@
 package org.nexora.api.modelos;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Usuarios") // Alineado con la tabla de la base de datos
@@ -43,6 +47,11 @@ public class Usuario {
     // Relación bidireccional opcional de Uno a Uno con Perfil (mapeado por el atributo 'usuario' en Perfil)
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Perfil perfil;
+
+    //Relación de cardinalidad: Un Usuario tiene muchas Publicaciones
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario" )
+    private List<Publicacion> publicaciones = new ArrayList<>();
 
     // ---------- Constructores -----------
     public Usuario() {}
