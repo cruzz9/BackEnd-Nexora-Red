@@ -26,17 +26,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configure(http))
+                .csrf(csrf -> csrf.disable()) // Deshabilitamos CSRF para poder usar Postman libremente
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/usuarios/registro", "/api/usuarios/login").permitAll() // Rutas públicas
-                        .anyRequest().authenticated() // Rutas protegidas (como perfiles, cambiar contraseña, etc.)
+                        // Permite registrarse sin requerir token JWT
+                        .requestMatchers("/api/usuarios/registro").permitAll()
+                        // Si tienes un endpoint de login, también debe ser libre:
+                        .requestMatchers("/api/usuarios/login").permitAll()
+                        // Cualquier otra ruta sí requerirá estar autenticado
+                        .anyRequest().authenticated()
                 )
-                //  NUEVO: Le decimos a Spring que no guarde sesiones en el servidor (Stateless),
+                // Le decimos a Spring que no guarde sesiones en el servidor (Stateless),
                 // ya que usaremos únicamente los tokens JWT para validar cada petición.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // 🌟 NUEVO: Colocamos nuestro filtro personalizado para que actúe ANTES del filtro de login estándar
+        // Colocamos nuestro filtro personalizado para que actúe ANTES del filtro de login estándar
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

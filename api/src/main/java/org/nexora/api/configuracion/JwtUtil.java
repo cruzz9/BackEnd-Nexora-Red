@@ -30,28 +30,27 @@ public class JwtUtil {
                 .compact(); // Une la cabecera, cuerpo y firma en un solo String largo
     }
 
-    // 🔍 FUNCIÓN 2: Leer la pulsera y extraer el email de su interior
+    // 🔑 FUNCIÓN 2: Leer la pulsera y extraer el email de su interior
     public String extraerEmail(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(CLAVE_FIRMA) // Le pasamos la clave secreta para validar que la firma sea legítima
+        Claims claims = Jwts.parser() // Usamos parser() en lugar de parserBuilder()
+                .verifyWith(CLAVE_FIRMA) // CLAVE_FIRMA debe ser de tipo SecretKey
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject(); // Retorna el email que guardamos en el Subject
+                .parseSignedClaims(token) // Usamos parseSignedClaims para tokens firmados
+                .getPayload(); // .getPayload() sustituye al antiguo .getBody()
+
+        return claims.getSubject();
     }
 
-    // FUNCIÓN 3: Comprobar si la pulsera ya caducó
+    // 🔑 FUNCIÓN 3: Comprobar si la pulsera ya caducó
     public boolean esTokenValido(String token) {
         try {
-            Date expiracion = Jwts.parserBuilder()
-                    .setSigningKey(CLAVE_FIRMA)
+            Jwts.parser()
+                    .verifyWith(CLAVE_FIRMA)
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getExpiration();
-            return expiracion.after(new Date()); // Retorna true si la fecha actual es anterior a la de expiración
+                    .parseSignedClaims(token);
+            return true;
         } catch (Exception e) {
-            return false; // Si la firma está alterada o vencida, lanza excepción y es inválido
+            return false;
         }
     }
 }
