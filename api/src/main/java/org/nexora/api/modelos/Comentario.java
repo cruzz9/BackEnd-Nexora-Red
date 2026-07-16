@@ -25,6 +25,11 @@ public class Comentario {
     @JoinColumn(name="Publicaciones_publicacion_id")
     private Publicacion publicacion;
 
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name="usuario_id")
+    private Usuario usuario;
+
 
 
     public Comentario(String contenido) {
@@ -56,12 +61,22 @@ public class Comentario {
     }//setPublicacion
 
 
+    public Usuario getUsuario() {
+        return usuario;
+    }//getUsuario
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }//setUsuario
+
+
     @Override
     public String toString() {
         return "Comentario{" +
                 "comentarioId=" + comentarioId +
                 ", contenido='" + contenido + '\'' +
                 ", publicacion=" + publicacion +
+                ", usuario=" + usuario +
                 '}';
     }
 }//class Comentario

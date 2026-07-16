@@ -8,6 +8,7 @@ import org.nexora.api.repositorios.ComentarioRepository;
 import org.nexora.api.repositorios.PublicacionRepository;
 import org.nexora.api.repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.stereotype.Service;
@@ -19,17 +20,15 @@ public class ComentarioService {
 
     private final ComentarioRepository comentarioRepository;
     private final PublicacionRepository publicacionRepository;
-
-
-
+    private final UsuarioRepository usuarioRepository;
 
 
     @Autowired
-    public ComentarioService(ComentarioRepository comentarioRepository, PublicacionRepository publicacionRepository) {
+    public ComentarioService(ComentarioRepository comentarioRepository, PublicacionRepository publicacionRepository, UsuarioRepository usuarioRepository) {
 
         this.comentarioRepository = comentarioRepository;
         this.publicacionRepository = publicacionRepository;
-
+        this.usuarioRepository=usuarioRepository;
     }//constructor ComentarioService
 
     public List<Comentario> getComentarios() {
@@ -53,6 +52,16 @@ public class ComentarioService {
     }//deleteComentario
 
     public Comentario crearComentario(Comentario comentario){
+
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal()
+                .toString();
+
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        comentario.setUsuario(usuario);
 
         return comentarioRepository.save(comentario);
     }//crearComentario
