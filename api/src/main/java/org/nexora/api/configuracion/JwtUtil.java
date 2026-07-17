@@ -1,11 +1,12 @@
 package org.nexora.api.configuracion;
-
+import javax.crypto.SecretKey; // en vez de java.security.Key
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ public class JwtUtil {
     //  Una clave secreta lo suficientemente larga para firmar de forma segura.
     // IMPORTANTE: En producción esto debe ir en variables de entorno.
     private final String SECRETO = "NexoraComunidadSTEMSegura2026ClaveSuperSecretaParaFirmarTokens";
-    private final Key CLAVE_FIRMA = Keys.hmacShaKeyFor(SECRETO.getBytes());
+    private final SecretKey CLAVE_FIRMA = Keys.hmacShaKeyFor(SECRETO.getBytes());
 
     // El token durará 5 horas activo antes de que expire y obligue a re-loguear
     private final long TIEMPO_EXPIRACION = 1000 * 60 * 60 * 5;
@@ -23,11 +24,11 @@ public class JwtUtil {
     // 🔨 FUNCIÓN 1: Crear la pulsera (Token) cuando el Login sea correcto
     public String generarToken(String email) {
         return Jwts.builder()
-                .setSubject(email) // Guardamos el email como identificador dentro de la pulsera
-                .setIssuedAt(new Date(System.currentTimeMillis())) // Fecha de creación
-                .setExpiration(new Date(System.currentTimeMillis() + TIEMPO_EXPIRACION)) // Fecha de caducidad
-                .signWith(CLAVE_FIRMA, SignatureAlgorithm.HS256) // Firmamos criptográficamente el token
-                .compact(); // Une la cabecera, cuerpo y firma en un solo String largo
+                .subject(email)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + TIEMPO_EXPIRACION))
+                .signWith(CLAVE_FIRMA, Jwts.SIG.HS256) // en vez de SignatureAlgorithm.HS256
+                .compact();
     }
 
     // 🔑 FUNCIÓN 2: Leer la pulsera y extraer el email de su interior
