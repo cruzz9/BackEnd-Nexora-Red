@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/comentarios/") //http://localhost:8080/api/Comentarios/
+@RequestMapping(path = "/api/comentarios/") //http://localhost:8080/api/comentarios/
 public class ComentarioController {
 
     private final  ComentarioService comentarioService;

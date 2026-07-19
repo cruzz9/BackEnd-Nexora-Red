@@ -1,5 +1,6 @@
 package org.nexora.api.modelos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,6 +25,7 @@ public class Perfil {
     private String datosCarrera;
 
     // RELACIÓN DE CARDINALIDAD REAL: Un Perfil pertenece a un único Usuario
+    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Usuarios_usuario_id", referencedColumnName = "usuario_id", nullable = false) // Columna física de FK
     private Usuario usuario;

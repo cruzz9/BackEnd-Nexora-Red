@@ -30,7 +30,7 @@ private Long likes;
 private Usuario usuario;
 
 // Una Publicación puede tener Muchos comentarios
-    @JsonManagedReference
+    @JsonManagedReference("publicacion-comentarios")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "publicacion")
  private List<Comentario> comentarios = new ArrayList<>();
 

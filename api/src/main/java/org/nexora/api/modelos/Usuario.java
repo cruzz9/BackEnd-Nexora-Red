@@ -1,5 +1,6 @@
 package org.nexora.api.modelos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -40,11 +41,13 @@ public class Usuario {
     private String contrasena;
 
     // RELACIÓN DE CARDINALIDAD REAL: Muchos Usuarios tienen Una Especialidad
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY) // LAZY carga la especialidad solo si la solicitas expresamente (mejora rendimiento)
     @JoinColumn(name = "especialidad_especialidad_id", nullable = false) // Mapea la clave foránea física en MySQL
     private Especialidad especialidad;
 
     // Relación bidireccional opcional de Uno a Uno con Perfil (mapeado por el atributo 'usuario' en Perfil)
+    @JsonManagedReference
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Perfil perfil;
 
