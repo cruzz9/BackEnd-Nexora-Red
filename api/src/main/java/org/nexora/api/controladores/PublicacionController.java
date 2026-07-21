@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping(path = "/api/publicaciones/") //http://localhost:8080/api/publicaciones/
 public class PublicacionController {

@@ -24,7 +24,7 @@ public class PerfilService {
 
     // Obtener el perfil asociado a un Usuario específico
     public Optional<Perfil> obtenerPorUsuarioId(Long usuarioId) {
-        return perfilRepository.findByUsuarioId(usuarioId);
+        return perfilRepository.findByUsuario_Id(usuarioId);
     }
 
     // Guardar o registrar un perfil nuevo

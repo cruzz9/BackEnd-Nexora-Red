@@ -234,7 +234,7 @@ formBtn.addEventListener("click", (e) => {
             especialidad: { id: especialidadId }
         };
 
-        const URL_API = 'http://localhost:8080/api/usuarios/registro';
+       const URL_API = '/api/usuarios/registro';
 
         fetch(URL_API, {
             method: 'POST',

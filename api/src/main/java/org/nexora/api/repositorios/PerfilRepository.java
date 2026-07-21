@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface PerfilRepository extends JpaRepository<Perfil, Long> {
 
     // Metodo personalizado para buscar el perfil usando el ID del usuario asociado
-    Optional<Perfil> findByUsuarioId(Long usuarioId);
+    Optional<Perfil> findByUsuario_Id(Long usuarioId);
 }

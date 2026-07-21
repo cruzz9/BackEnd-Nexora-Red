@@ -6,6 +6,7 @@ const telefono = document.getElementById("telefono");
 const mensaje = document.getElementById("mensaje");
 const formBtn = document.getElementById("formBtn");
 
+
 //Expresiones regulares
 const regexEmail = (/[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/);
 const regexName = (/^[A-Za-zÑñÁáÉéÍíÓóÚúüÜ]+(?:[' -][A-Za-zÑñÁáÉéÍíÓóÚúüÜ]+)*$/);

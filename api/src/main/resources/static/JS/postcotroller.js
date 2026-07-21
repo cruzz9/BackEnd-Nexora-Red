@@ -150,7 +150,7 @@ function mostrarAlerta(mensaje, tipo = "danger") {
 }
 
 // Variable global para almacenar las especialidades
-const BASE_URL = 'http://localhost:8080/api';
+const BASE_URL =   'api';
 let especialidadesDisponibles = [];
 
 async function cargarEspecialidades() {
@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(nuevaPublicacionData)
+                  body: JSON.stringify(nuevaPublicacionData)
             })
             .then(response => {
                 if (!response.ok) throw new Error("Error en la respuesta del servidor");

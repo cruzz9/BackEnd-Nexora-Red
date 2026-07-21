@@ -28,9 +28,31 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/usuarios/registro", "/api/usuarios/login").permitAll()
-                        .requestMatchers("/api/especialidades/**").permitAll()
-                        .anyRequest().authenticated()
+
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/login.html",
+                                "/cuenta.html",
+                                "/perfil.html",
+                                "/nosotros.html",
+                                "/contactanos.html",
+                                "/CSS/**",
+                                "/JS/**",
+                                "/assets/**",
+                                "/favicon.ico"
+                        ).permitAll()
+// API pública
+                                .requestMatchers(
+                                        "/api/usuarios/login",
+                                        "/api/usuarios/registro",
+                                        "/api/especialidades/**"
+                                ).permitAll()
+
+
+.anyRequest().authenticated()
+
+
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

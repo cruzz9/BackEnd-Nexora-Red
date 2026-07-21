@@ -73,7 +73,7 @@ async function manejarLogin(event) {
     });
 
     try {
-        const respuesta = await fetch('http://localhost:8080/api/usuarios/login', {
+        const respuesta = await fetch("/api/usuarios/login", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

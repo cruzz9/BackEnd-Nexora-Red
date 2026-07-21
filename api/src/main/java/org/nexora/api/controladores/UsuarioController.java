@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/usuarios/") // Ruta base para todos los endpoints de este controlador
-@CrossOrigin(origins = "*") // Permite que tu Frontend se conecte sin bloqueos de CORS
+ // Permite que tu Frontend se conecte sin bloqueos de CORS
 public class UsuarioController {
     @Autowired
     private org.nexora.api.configuracion.JwtUtil jwtUtil;

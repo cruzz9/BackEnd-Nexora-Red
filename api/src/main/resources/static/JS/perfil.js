@@ -1,11 +1,11 @@
-const API_URL_PERFIL = 'http://localhost:8080/api/usuarios';
+const API_URL_PERFIL = '/api/perfiles/usuario/';
 
 async function obtenerDatosServidor() {
     try {
         const token = localStorage.getItem('token');
         const usuarioId = localStorage.getItem('usuarioId');
 
-        const respuesta = await fetch(API_URL_PERFIL, {
+        const respuesta = await fetch (`${API_URL_PERFIL}${usuarioId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -13,7 +13,7 @@ async function obtenerDatosServidor() {
         if (!respuesta.ok) throw new Error(`Error en el servidor: ${respuesta.status}`);
 
         const usuarios = await respuesta.json();
-        const usuario = usuarios.find(u => u.id === Number(usuarioId));
+
 
         if (!usuario) throw new Error("Usuario no encontrado en la respuesta del servidor");
 

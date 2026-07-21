@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/api/perfiles")
-@CrossOrigin(origins = "*") // Permite la comunicación con el Frontend de Nexora
+ // Permite la comunicación con el Frontend de Nexora
 public class PerfilController {
 
     private final PerfilService perfilService;
